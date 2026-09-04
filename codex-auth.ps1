@@ -171,6 +171,7 @@ function Write-AtomicBytes {
     Assert-NoReparsePoint $fullPath
 
     $tempPath = Join-Path $directory ('.codex-auth-switcher-' + [Guid]::NewGuid().ToString('N') + '.tmp')
+    $backupPath = Join-Path $directory ('.codex-auth-switcher-' + [Guid]::NewGuid().ToString('N') + '.bak')
     try {
         $stream = [IO.File]::Open(
             $tempPath,
@@ -191,7 +192,7 @@ function Write-AtomicBytes {
         }
 
         if (Test-Path -LiteralPath $fullPath) {
-            [IO.File]::Replace($tempPath, $fullPath, $null, $true)
+            [IO.File]::Replace($tempPath, $fullPath, $backupPath, $true)
         }
         else {
             [IO.File]::Move($tempPath, $fullPath)
@@ -200,6 +201,14 @@ function Write-AtomicBytes {
     finally {
         if (Test-Path -LiteralPath $tempPath) {
             Remove-Item -LiteralPath $tempPath -Force
+        }
+        if (Test-Path -LiteralPath $backupPath) {
+            try {
+                Remove-Item -LiteralPath $backupPath -Force
+            }
+            catch {
+                Write-Warning "A temporary atomic backup could not be removed: $backupPath"
+            }
         }
     }
 }
