@@ -9,6 +9,7 @@ param(
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
+Add-Type -AssemblyName System.Security
 
 $script:ProfileSuffix = '.auth.dpapi'
 $script:DpapiEntropy = [Text.Encoding]::UTF8.GetBytes('TerminatedCable/CodexAuthSwitcher/v1')
@@ -135,10 +136,10 @@ function Assert-FileBackedAuthentication {
 function Protect-Bytes {
     param([Parameter(Mandatory = $true)][byte[]]$Bytes)
 
-    $protected = [Security.Cryptography.ProtectedData]::Protect(
+    $protected = [System.Security.Cryptography.ProtectedData]::Protect(
         $Bytes,
         $script:DpapiEntropy,
-        [Security.Cryptography.DataProtectionScope]::CurrentUser)
+        [System.Security.Cryptography.DataProtectionScope]::CurrentUser)
     return ,$protected
 }
 
@@ -146,10 +147,10 @@ function Unprotect-Bytes {
     param([Parameter(Mandatory = $true)][byte[]]$Bytes)
 
     try {
-        $plain = [Security.Cryptography.ProtectedData]::Unprotect(
+        $plain = [System.Security.Cryptography.ProtectedData]::Unprotect(
             $Bytes,
             $script:DpapiEntropy,
-            [Security.Cryptography.DataProtectionScope]::CurrentUser)
+            [System.Security.Cryptography.DataProtectionScope]::CurrentUser)
         return ,$plain
     }
     catch {
