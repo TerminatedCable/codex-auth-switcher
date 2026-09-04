@@ -1,0 +1,11 @@
+# Codex credentials and local vault artifacts
+auth.json*
+*.auth.dpapi
+
+# Local release output
+dist/
+
+# Editor and OS noise
+.DS_Store
+.vscode/
+
