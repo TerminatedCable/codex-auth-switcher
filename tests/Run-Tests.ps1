@@ -52,14 +52,14 @@ try {
     }
 
     Auth acct_alpha fixture_access_alpha_1 fixture_refresh_alpha_1
-    Pass (Run save alpha) 'save alpha'
+    Pass (Run save 'Account 1') 'save Account 1'
     Auth acct_beta fixture_access_beta_1 fixture_refresh_beta_1
-    Pass (Run save beta) 'save beta'
-    Pass (Run switch alpha) 'switch alpha'
-    Assert ((Field account_id) -ceq 'acct_alpha') 'alpha should be active'
+    Pass (Run save 'Account 2') 'save Account 2'
+    Pass (Run switch 'Account 1') 'switch Account 1'
+    Assert ((Field account_id) -ceq 'acct_alpha') 'Account 1 should be active'
     Auth acct_alpha fixture_access_alpha_2 fixture_refresh_alpha_2
-    Pass (Run switch beta) 'switch beta after refresh'
-    Pass (Run switch alpha) 'switch back to alpha'
+    Pass (Run switch 'Account 2') 'switch Account 2 after refresh'
+    Pass (Run switch 'Account 1') 'switch back to Account 1'
     Assert ((Field access_token) -ceq 'fixture_access_alpha_2') 'refreshed token should survive'
 
     $accounts = Join-Path $local 'TerminatedCable\CodexAuthSwitcher\accounts'
@@ -70,10 +70,10 @@ try {
     }
 
     Auth acct_gamma fixture_access_gamma fixture_refresh_gamma
-    Fail (Run save alpha) 'label collision'
+    Fail (Run save 'Account 1') 'label collision'
     Pass (Run save gamma) 'save gamma'
     Auth acct_alpha fixture_access_alpha_3 fixture_refresh_alpha_3
-    Fail (Run save alpha-copy) 'duplicate account'
+    Fail (Run save 'Account 1 copy') 'duplicate account'
     Fail (Run save '..\unsafe') 'unsafe label'
     [IO.File]::WriteAllText((Join-Path $testCodexHome 'auth.json'), '{not-json')
     Fail (Run save invalid) 'invalid JSON'
@@ -91,12 +91,12 @@ try {
     $authPath = Join-Path $testCodexHome 'auth.json'
     $before = [Convert]::ToBase64String([IO.File]::ReadAllBytes($authPath))
     $held = [IO.File]::Open($authPath, 'Open', 'Read', 'Read')
-    try { Fail (Run switch beta) 'locked auth replacement' } finally { $held.Dispose() }
+    try { Fail (Run switch 'Account 2') 'locked auth replacement' } finally { $held.Dispose() }
     Assert ([Convert]::ToBase64String([IO.File]::ReadAllBytes($authPath)) -ceq $before) 'failed replacement changed auth.json'
 
-    Pass (Run switch beta) 'switch before restore'
+    Pass (Run switch 'Account 2') 'switch before restore'
     Pass (Run restore) 'restore'
-    Assert ((Field account_id) -ceq 'acct_alpha') 'restore should return to alpha'
+    Assert ((Field account_id) -ceq 'acct_alpha') 'restore should return to Account 1'
 
     $real, $link = (Join-Path $root 'real'), (Join-Path $root 'link')
     New-Item -ItemType Directory $real | Out-Null
