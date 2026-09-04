@@ -32,13 +32,13 @@ The `codex-auth.cmd` launcher uses `-ExecutionPolicy Bypass` for that PowerShell
 With your first account active in Codex:
 
 ```bat
-codex-auth save personal
+codex-auth save "Account 1"
 ```
 
 Use Codex's normal sign-out/sign-in flow to authenticate the second account, then save it:
 
 ```bat
-codex-auth save work
+codex-auth save "Account 2"
 ```
 
 The app closes briefly while a stable credential snapshot is captured and reopens if it was running.
@@ -47,14 +47,14 @@ The app closes briefly while a stable credential snapshot is captured and reopen
 
 ```bat
 codex-auth list
-codex-auth switch personal
-codex-auth switch work
+codex-auth switch "Account 1"
+codex-auth switch "Account 2"
 codex-auth restore
 ```
 
 Run `codex-auth` without arguments for a numbered picker. An asterisk in `list` marks the account matching the live `auth.json`.
 
-Labels are local aliases. Use 1-32 ASCII letters, numbers, dots, underscores, or hyphens, beginning with a letter or number.
+Labels are local aliases. Use 1-32 ASCII letters or numbers, with spaces, dots, underscores, or hyphens allowed between them. Labels must begin and end with a letter or number.
 
 ## Storage and privacy
 

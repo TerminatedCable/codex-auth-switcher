@@ -245,8 +245,8 @@ function Read-ProtectedBytes {
 function Assert-ValidLabel {
     param([Parameter(Mandatory = $true)][string]$Value)
 
-    if ($Value -cnotmatch '^[A-Za-z0-9][A-Za-z0-9._-]{0,31}$') {
-        throw 'Labels must be 1-32 ASCII letters, numbers, dots, underscores, or hyphens, beginning with a letter or number.'
+    if ($Value -cnotmatch '^[A-Za-z0-9](?:[A-Za-z0-9._ -]{0,30}[A-Za-z0-9])?$') {
+        throw 'Labels must be 1-32 ASCII letters or numbers, with spaces, dots, underscores, or hyphens allowed between them.'
     }
 }
 
